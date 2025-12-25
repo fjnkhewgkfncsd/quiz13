@@ -31,20 +31,39 @@ class _GroceryListState extends State<GroceryList> {
 
     if (dummyGroceryItems.isNotEmpty) {
       //  Display groceries with an Item builder and  LIst Tile
-      content = ListView.builder(
-        itemCount: dummyGroceryItems.length,
-        itemBuilder: (context, index) =>
-            GroceryTile(grocery: dummyGroceryItems[index]),
+      content = TabBarView(
+        children: [
+          ListView.builder(
+            itemCount: dummyGroceryItems.length,
+            itemBuilder: (context, index) =>
+                GroceryTile(grocery: dummyGroceryItems[index]),
+          ),
+          ListView.builder(
+            itemCount: dummyGroceryItems.where((item) => item.name.contains('b')).toList().length,
+            itemBuilder: (context, index) {
+              var filteredItems = dummyGroceryItems.where((item) => item.name.contains('b')).toList();
+              return GroceryTile(grocery: filteredItems[index]);
+            },
+            )
+        ],
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
+    return DefaultTabController(length: 2,
+      child: Scaffold(
+        appBar: AppBar(
         title: const Text('Your Groceries'),
         actions: [IconButton(onPressed: onCreate, icon: const Icon(Icons.add))],
       ),
       body: content,
-    );
+      bottomNavigationBar: const TabBar(
+        tabs: [
+          Tab(icon: Icon(Icons.local_grocery_store), text: 'Groceries'),
+          Tab(icon: Icon(Icons.search), text: 'Search'),
+        ],
+      ),
+      )
+  );
   }
 }
 
